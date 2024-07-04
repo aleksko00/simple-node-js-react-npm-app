@@ -1,6 +1,10 @@
 pipeline {
-    agent any
-
+     agent {
+        docker {
+            image 'node:20.15.0' // Use a Docker image with Node.js installed
+            args '-u root:root' // Optional: Run as root to avoid permission issues
+        }
+    }
     environment {
         NODE_ENV = 'development'
     }
