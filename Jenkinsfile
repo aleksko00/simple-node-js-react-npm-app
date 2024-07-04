@@ -1,41 +1,30 @@
 pipeline {
-     agent {
+    agent {
         docker {
-            image 'node:20.15.0' // Use a Docker image with Node.js installed
-            args '-u root:root' // Optional: Run as root to avoid permission issues
+            image 'node:lts-buster-slim'
+            args '-p 3000:3000'
         }
     }
     environment {
-        NODE_ENV = 'development'
+        CI = 'true'
     }
-
     stages {
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                // Install dependencies
                 sh 'npm install'
             }
         }
-
-         stage('Test') {
+        stage('Test') {
             steps {
                 sh './jenkins/scripts/test.sh'
             }
         }
-
-        stage('Deliver') { 
+        stage('Deliver') {
             steps {
-                sh './jenkins/scripts/deliver.sh' 
-                input message: 'Finished using the web site? (Click "Proceed" to continue)' 
-                sh './jenkins/scripts/kill.sh' 
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean workspace after build
-            cleanWs()
         }
     }
 }
