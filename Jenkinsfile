@@ -1,10 +1,23 @@
 pipeline {
     agent any
+
+    environment {
+        NODE_ENV = 'development'
+    }
+
     stages {
-        stage('Build') { 
+        stage('Install Dependencies') {
             steps {
-                sh 'npm install' 
+                // Install dependencies
+                sh 'npm install'
             }
+        }
+    }
+
+    post {
+        always {
+            // Clean workspace after build
+            cleanWs()
         }
     }
 }
